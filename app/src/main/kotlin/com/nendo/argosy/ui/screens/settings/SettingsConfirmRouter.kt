@@ -637,6 +637,7 @@ private fun routeStorageGamesConfirm(vm: SettingsViewModel, state: SettingsUiSta
             return InputResult.handled(SoundType.TOGGLE)
         }
         is StorageGamesItem.PlatformRow -> vm.openStoragePlatformGames(item.usage.platformId)
+        StorageGamesItem.LocalOnly -> vm.openStorageLocalOnlyGames()
         else -> {}
     }
     return InputResult.HANDLED
@@ -725,6 +726,10 @@ private fun routeInterfaceConfirm(vm: SettingsViewModel, state: SettingsUiState)
     when (interfaceItemAtFocusIndex(state.focusedIndex, layoutState)) {
         InterfaceItem.Language -> {
             vm.requestEnumPicker(InterfaceItem.Language.key)
+            return InputResult.handled(SoundType.OPEN_MODAL)
+        }
+        InterfaceItem.ScreenOrientation -> {
+            vm.requestEnumPicker(InterfaceItem.ScreenOrientation.key)
             return InputResult.handled(SoundType.OPEN_MODAL)
         }
         InterfaceItem.CompactFooter -> vm.setCompactFooter(!state.display.compactFooter)

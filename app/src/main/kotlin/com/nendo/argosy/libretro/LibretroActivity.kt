@@ -139,8 +139,10 @@ import com.nendo.argosy.ui.theme.GRIP_RESERVE_MIN_PERCENT
 import com.nendo.argosy.ui.theme.resolveGripReserveFraction
 import com.nendo.argosy.data.preferences.BuiltinEmulatorSettings
 import com.nendo.argosy.util.AppPaths
+import com.nendo.argosy.util.fixedRequest
 import com.nendo.argosy.util.hideSystemBars
 import com.nendo.argosy.util.installImmersiveMode
+import com.nendo.argosy.util.isOnMainDisplay
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.LibretroDroid
@@ -157,7 +159,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -389,6 +393,7 @@ class LibretroActivity : ComponentActivity() {
     private var currentOrientationState by mutableStateOf(android.content.res.Configuration.ORIENTATION_LANDSCAPE)
     private var currentRotationState by mutableStateOf(0)
     private var touchSettingsState by mutableStateOf(com.nendo.argosy.data.preferences.BuiltinEmulatorSettings())
+    private var screenOrientationMode = com.nendo.argosy.data.preferences.ScreenOrientationMode.AUTO
     private var portraitPositionState by mutableStateOf("Auto")
     private var gripReserveModeState by mutableStateOf(com.nendo.argosy.data.preferences.GripReserveMode.OFF)
     private var gripReservePercentState by mutableStateOf(GRIP_RESERVE_DEFAULT_PERCENT)
@@ -437,6 +442,8 @@ class LibretroActivity : ComponentActivity() {
     private var onSecondaryDisplayState by mutableStateOf(false)
     private var hostDisplayId = android.view.Display.INVALID_DISPLAY
     private var orientationEventListener: android.view.OrientationEventListener? = null
+    private var dockDisplayListener: android.hardware.display.DisplayManager.DisplayListener? = null
+    private var lastDockedOrientation: Int? = null
 
     private val isAnyMenuOpen: Boolean
         get() = menuVisible || shaderChainEditorVisible || frameEditorVisible || autoRestorePromptVisible || discMenuVisible ||
@@ -457,6 +464,7 @@ class LibretroActivity : ComponentActivity() {
         isGamepadConnectedState = com.nendo.argosy.core.input.ControllerDetector.isAnyGamepadConnected()
         registerGamepadDetection()
         registerOrientationListener()
+        registerDockDisplayListener()
 
         onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -574,6 +582,15 @@ class LibretroActivity : ComponentActivity() {
             }
         }
         applyOrientationLock(globalSettings.touchControlsLockOrientation)
+        lifecycleScope.launch {
+            preferencesRepository.userPreferences
+                .map { it.screenOrientation }
+                .distinctUntilChanged()
+                .collect { mode ->
+                    screenOrientationMode = mode
+                    applyOrientationLock(touchSettingsState.touchControlsLockOrientation)
+                }
+        }
         val settings = kotlinx.coroutines.runBlocking {
             effectiveLibretroSettingsResolver.getEffectiveSettings(platformId, platformSlug)
         }
@@ -823,7 +840,7 @@ class LibretroActivity : ComponentActivity() {
             diskJudge = activeSaveDiskJudge,
             secureSaves = secureSavesEnabled,
             ownerUserId = launchPreferences.rommUserId,
-            usesExternalMemcard = com.nendo.argosy.data.platform.PlatformDefinitions.getCanonicalSlug(platformSlug) == "gc",
+            usesExternalMemcard = SaveStateManager.usesExternalMemcard(platformSlug),
             channelName = channelName,
             isVariant = variantFileId >= 0,
             primarySavePath = primarySavePath,
@@ -991,6 +1008,7 @@ class LibretroActivity : ComponentActivity() {
         hostDisplayId = displayId
         baselineRotation = currentRotationState
         onSecondaryDisplayState = onSecondaryDisplay()
+        applyOrientationLock(touchSettingsState.touchControlsLockOrientation)
         rebuildSecondScreen()
         com.nendo.argosy.DualScreenManagerHolder.instance?.onGameMovedToDisplay(displayId)
     }
@@ -3772,7 +3790,17 @@ class LibretroActivity : ComponentActivity() {
     }
 
     private fun applyOrientationLock(locked: Boolean) {
-        requestedOrientation = if (!locked) {
+        val fixed = screenOrientationMode.fixedRequest()?.takeIf { isOnMainDisplay }
+        val dockedOrientation = com.nendo.argosy.util.DisplayAffinityHelper.dockedOrientationFor(
+            this,
+            try { window.decorView.display ?: windowManager.defaultDisplay } catch (_: Exception) { null }
+        )
+        lastDockedOrientation = dockedOrientation
+        requestedOrientation = if (fixed != null) {
+            fixed
+        } else if (dockedOrientation != null) {
+            dockedOrientation
+        } else if (!locked) {
             android.content.pm.ActivityInfo.SCREEN_ORIENTATION_FULL_USER
         } else if (currentOrientationState == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
             android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
@@ -3837,6 +3865,37 @@ class LibretroActivity : ComponentActivity() {
         val l = inputDeviceListener ?: return
         getSystemService(android.hardware.input.InputManager::class.java)?.unregisterInputDeviceListener(l)
         inputDeviceListener = null
+    }
+
+    /**
+     * Keeps the dock-only lock honest. The panels coming back on, or the external display going
+     * away, both change what the lock should be, and neither reaches the settings flow that
+     * normally re-applies it.
+     */
+    private fun registerDockDisplayListener() {
+        val displayManager = getSystemService(android.hardware.display.DisplayManager::class.java) ?: return
+        dockDisplayListener = object : android.hardware.display.DisplayManager.DisplayListener {
+            override fun onDisplayAdded(displayId: Int) = refreshDockOrientationLock()
+            override fun onDisplayChanged(displayId: Int) = refreshDockOrientationLock()
+            override fun onDisplayRemoved(displayId: Int) = refreshDockOrientationLock()
+        }
+        displayManager.registerDisplayListener(dockDisplayListener, null)
+    }
+
+    private fun unregisterDockDisplayListener() {
+        val listener = dockDisplayListener ?: return
+        getSystemService(android.hardware.display.DisplayManager::class.java)?.unregisterDisplayListener(listener)
+        dockDisplayListener = null
+    }
+
+    private fun refreshDockOrientationLock() {
+        if (isFinishing || isDestroyed) return
+        val docked = com.nendo.argosy.util.DisplayAffinityHelper.dockedOrientationFor(
+            this,
+            try { window.decorView.display ?: windowManager.defaultDisplay } catch (_: Exception) { null }
+        )
+        if (docked == lastDockedOrientation) return
+        applyOrientationLock(touchSettingsState.touchControlsLockOrientation)
     }
 
     private fun registerOrientationListener() {
@@ -4012,6 +4071,7 @@ class LibretroActivity : ComponentActivity() {
         if (isFinishing) speedrunTimer.disarm()
         unregisterGamepadDetection()
         unregisterOrientationListener()
+        unregisterDockDisplayListener()
         if (::audioController.isInitialized) audioController.abandonAudioFocus()
         com.nendo.argosy.DualScreenManagerHolder.instance?.let { dsm ->
             dsm.emulatorKeyDispatcher = null
