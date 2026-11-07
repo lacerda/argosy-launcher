@@ -139,7 +139,7 @@ internal fun routeObserveDelegateStates(vm: SettingsViewModel) {
                             .createStoragePlatformGamesLayoutInfo(updated)
                     )
                 val clampedFocus = state.focusedIndex.coerceAtMost(maxIndex).coerceAtLeast(0)
-                val focusedBuckets = storagePlatformGames.games.getOrNull(clampedFocus)?.buckets?.size ?: 0
+                val focusedBuckets = storagePlatformGames.visibleGames.getOrNull(clampedFocus)?.buckets?.size ?: 0
                 val clampedCategory = storagePlatformGames.highlightedCategoryIndex
                     .coerceAtMost((focusedBuckets - 1).coerceAtLeast(0))
                     .coerceAtLeast(0)
@@ -551,7 +551,7 @@ internal fun routeLoadSettings(vm: SettingsViewModel) {
 
         val downloadedSize = vm.gameRepository.getDownloadedGamesSize()
         val downloadedCount = vm.gameRepository.getDownloadedGamesCount()
-        val adoptedCount = vm.gameRepository.getAdoptedGamesCount()
+        val localOnlyCount = vm.gameRepository.getLocalOnlyGamesCount()
         val availableSpace = vm.gameRepository.getAvailableStorageBytes()
         val box3dCapableGames = vm.gameRepository.countBox3dCapableGames()
         val libraryRegionOptions = vm.gameRepository.getDistinctRegions()
@@ -598,6 +598,7 @@ internal fun routeLoadSettings(vm: SettingsViewModel) {
             compactFooter = prefs.compactFooter,
             hideSystemNavigationBar = prefs.hideSystemNavigationBar,
             hideSystemStatusBar = prefs.hideSystemStatusBar,
+            screenOrientation = prefs.screenOrientation,
             quickPanelInEmulators = prefs.quickPanelInEmulators,
             lockScreenArt = prefs.lockScreenArt,
             homeAppAvailable = prefs.homeAppAvailable,
@@ -813,7 +814,7 @@ internal fun routeLoadSettings(vm: SettingsViewModel) {
             romStoragePath = prefs.romStoragePath ?: "",
             downloadedGamesSize = downloadedSize,
             downloadedGamesCount = downloadedCount,
-            adoptedGamesCount = adoptedCount,
+            localOnlyGamesCount = localOnlyCount,
             maxConcurrentDownloads = prefs.maxConcurrentDownloads,
             allowRemoteInstalls = prefs.allowRemoteInstalls,
             autoStartDownloads = prefs.autoStartDownloads,

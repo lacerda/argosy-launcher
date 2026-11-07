@@ -30,15 +30,12 @@
     <string name="ui_save_channel_tab_states">即时存档</string>
     <string name="ui_save_channel_states_empty">没有可用的即时存档槽位</string>
     <string name="ui_save_channel_states_heading_named">%1$s中的即时存档</string>
-    <string name="ui_save_channel_states_heading_default">默认槽位中的即时存档</string>
     <string name="ui_save_channel_slot_new">新建槽位</string>
     <string name="ui_save_channel_slot_legacy_tag">[旧版]</string>
     <string name="ui_save_channel_history_active_point">当前恢复点</string>
     <string name="ui_save_channel_history_latest">最新</string>
     <string name="ui_save_channel_history_tag_synced">[已同步]</string>
     <string name="ui_save_channel_history_tag_local">[本地]</string>
-    <string name="ui_save_channel_active_default">最新</string>
-    <string name="ui_save_channel_slot_autosave">自动存档</string>
     <string name="ui_save_channel_slot_archived">已归档</string>
 
     <string name="ui_save_channel_footer_migrate">迁移</string>
@@ -480,6 +477,7 @@
     <string name="ui_platform_filter_hint_list_close">关闭</string>
 
     <string name="ui_volume_meter_other">其他应用和文件</string>
+    <string name="ui_volume_meter_unknown_location">%1$s 的游戏位于未知位置</string>
     <string name="ui_volume_meter_free">剩余%1$s</string>
 
     <string name="ui_cycle_preference_reset_to_global">重置为全局设置</string>
@@ -561,6 +559,10 @@
     <string name="ui_quick_settings_theme_light">浅色</string>
     <string name="ui_quick_settings_theme_dark">深色</string>
     <string name="ui_quick_settings_theme_system">自动</string>
+    <string name="ui_quick_settings_orientation">方向</string>
+    <string name="ui_quick_settings_orientation_auto">自动</string>
+    <string name="ui_quick_settings_orientation_landscape">横屏</string>
+    <string name="ui_quick_settings_orientation_portrait">竖屏</string>
     <string name="ui_quick_settings_haptics">震动反馈</string>
     <string name="ui_quick_settings_ui_sounds">界面音效</string>
     <string name="ui_quick_settings_swap_ab">交换 A/B</string>
@@ -652,7 +654,6 @@
 
     <string name="ui_sync_overlay_unknown_game">游戏</string>
     <string name="ui_sync_overlay_slot_prefix">"槽位："</string>
-    <string name="ui_sync_overlay_slot_default">最新</string>
     <string name="ui_sync_overlay_blocked_grant">授予权限</string>
     <string name="ui_sync_overlay_blocked_configure_path">配置存档路径</string>
     <string name="ui_sync_overlay_blocked_disable">禁用同步</string>
@@ -928,7 +929,6 @@
     <string name="media_library_viewmodel_refresh_label">正在刷新</string>
 
     <string name="gamedetail_action_buttons_play">开始游戏</string>
-    <string name="gamedetail_action_buttons_autosave">自动存档</string>
     <string name="gamedetail_action_buttons_download">下载</string>
     <string name="gamedetail_action_buttons_install">安装</string>
     <string name="gamedetail_action_buttons_queued">排队中...</string>

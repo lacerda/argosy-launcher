@@ -30,15 +30,12 @@
     <string name="ui_save_channel_tab_states">Состояния</string>
     <string name="ui_save_channel_states_empty">Нет доступных слотов состояний</string>
     <string name="ui_save_channel_states_heading_named">Состояния в %1$s</string>
-    <string name="ui_save_channel_states_heading_default">Состояния в слоте по умолчанию</string>
     <string name="ui_save_channel_slot_new">Новый слот</string>
     <string name="ui_save_channel_slot_legacy_tag">[Устаревший]</string>
     <string name="ui_save_channel_history_active_point">Активная точка восстановления</string>
     <string name="ui_save_channel_history_latest">Последнее</string>
     <string name="ui_save_channel_history_tag_synced">[Синхронизировано]</string>
     <string name="ui_save_channel_history_tag_local">[Локально]</string>
-    <string name="ui_save_channel_active_default">Последнее</string>
-    <string name="ui_save_channel_slot_autosave">Автосохранение</string>
     <string name="ui_save_channel_slot_archived">В архиве</string>
 
     <string name="ui_save_channel_footer_migrate">Перенести</string>
@@ -525,6 +522,7 @@
     <string name="ui_platform_filter_hint_list_close">Закрыть</string>
 
     <string name="ui_volume_meter_other">Другие приложения и файлы</string>
+    <string name="ui_volume_meter_unknown_location">%1$s игр находятся в неизвестном месте</string>
     <string name="ui_volume_meter_free">%1$s свободно</string>
 
     <string name="ui_cycle_preference_reset_to_global">Сбросить к общему</string>
@@ -606,6 +604,10 @@
     <string name="ui_quick_settings_theme_light">Светлая</string>
     <string name="ui_quick_settings_theme_dark">Тёмная</string>
     <string name="ui_quick_settings_theme_system">Авто</string>
+    <string name="ui_quick_settings_orientation">Ориентация</string>
+    <string name="ui_quick_settings_orientation_auto">Авто</string>
+    <string name="ui_quick_settings_orientation_landscape">Альбомная</string>
+    <string name="ui_quick_settings_orientation_portrait">Книжная</string>
     <string name="ui_quick_settings_haptics">Вибрация</string>
     <string name="ui_quick_settings_ui_sounds">Звуки интерфейса</string>
     <string name="ui_quick_settings_swap_ab">Поменять A/B</string>
@@ -700,7 +702,6 @@
 
     <string name="ui_sync_overlay_unknown_game">Игра</string>
     <string name="ui_sync_overlay_slot_prefix">"Слот: "</string>
-    <string name="ui_sync_overlay_slot_default">Последнее</string>
     <string name="ui_sync_overlay_blocked_grant">Предоставить доступ</string>
     <string name="ui_sync_overlay_blocked_configure_path">Настроить путь сохранения</string>
     <string name="ui_sync_overlay_blocked_disable">Отключить синхронизацию</string>
@@ -1039,7 +1040,6 @@
     <string name="media_library_viewmodel_refresh_label">Обновление</string>
 
     <string name="gamedetail_action_buttons_play">ИГРАТЬ</string>
-    <string name="gamedetail_action_buttons_autosave">Автосохранение</string>
     <string name="gamedetail_action_buttons_download">СКАЧАТЬ</string>
     <string name="gamedetail_action_buttons_install">УСТАНОВИТЬ</string>
     <string name="gamedetail_action_buttons_queued">В ОЧЕРЕДИ...</string>

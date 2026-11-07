@@ -1189,6 +1189,10 @@ class SettingsViewModel @Inject constructor(
     fun setHideSystemNavigationBar(hide: Boolean) =
         displayDelegate.setHideSystemNavigationBar(viewModelScope, hide)
     fun setHideSystemStatusBar(hide: Boolean) = displayDelegate.setHideSystemStatusBar(viewModelScope, hide)
+    fun setScreenOrientation(mode: com.nendo.argosy.data.preferences.ScreenOrientationMode) =
+        displayDelegate.setScreenOrientation(viewModelScope, mode)
+    fun cycleScreenOrientation(direction: Int = 1) =
+        displayDelegate.cycleScreenOrientation(viewModelScope, direction)
     fun setQuickPanelInEmulators(enabled: Boolean) {
         permissionsDelegate.refreshPermissions()
         displayDelegate.setQuickPanelInEmulators(
@@ -1335,6 +1339,21 @@ class SettingsViewModel @Inject constructor(
             ?.firstOrNull { it.platformId == platformId }?.name ?: ""
         routePushSection(this, SettingsSection.STORAGE_PLATFORM_GAMES)
         storagePlatformGamesDelegate.open(platformId, name, viewModelScope)
+    }
+
+    fun openStorageLocalOnlyGames() {
+        routePushSection(this, SettingsSection.STORAGE_PLATFORM_GAMES)
+        storagePlatformGamesDelegate.openLocalOnly(viewModelScope)
+    }
+
+    fun setStorageLocationFilter(filter: StorageLocationFilter) {
+        storagePlatformGamesDelegate.setLocationFilter(filter)
+        setFocusIndex(0)
+    }
+
+    fun cycleStorageLocationFilter(delta: Int) {
+        storagePlatformGamesDelegate.cycleLocationFilter(delta)
+        setFocusIndex(0)
     }
 
     fun resetStoragePlatformHighlightedCategory() =

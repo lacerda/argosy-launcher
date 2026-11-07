@@ -32,15 +32,12 @@
     <string name="ui_save_channel_tab_states">Savestates</string>
     <string name="ui_save_channel_states_empty">Keine Savestate-Slots verfügbar</string>
     <string name="ui_save_channel_states_heading_named">Savestates in %1$s</string>
-    <string name="ui_save_channel_states_heading_default">Savestates im Standard-Slot</string>
     <string name="ui_save_channel_slot_new">Neuer Slot</string>
     <string name="ui_save_channel_slot_legacy_tag">[Alt]</string>
     <string name="ui_save_channel_history_active_point">Aktiver Wiederherstellungspunkt</string>
     <string name="ui_save_channel_history_latest">Neueste</string>
     <string name="ui_save_channel_history_tag_synced">[Synchronisiert]</string>
     <string name="ui_save_channel_history_tag_local">[Lokal]</string>
-    <string name="ui_save_channel_active_default">Neueste</string>
-    <string name="ui_save_channel_slot_autosave">Autospeicherung</string>
     <string name="ui_save_channel_slot_archived">Archiviert</string>
 
     <string name="ui_save_channel_footer_migrate">Migrieren</string>
@@ -503,6 +500,7 @@
     <!-- Storage meter, preference rows, home layout rows (ui/components) -->
 
     <string name="ui_volume_meter_other">Andere Apps &amp; Dateien</string>
+    <string name="ui_volume_meter_unknown_location">%1$s an Spielen liegen an einem unbekannten Ort</string>
     <string name="ui_volume_meter_free">%1$s frei</string>
 
     <string name="ui_cycle_preference_reset_to_global">Auf global zurücksetzen</string>
@@ -586,6 +584,10 @@
     <string name="ui_quick_settings_theme_light">Hell</string>
     <string name="ui_quick_settings_theme_dark">Dunkel</string>
     <string name="ui_quick_settings_theme_system">Auto</string>
+    <string name="ui_quick_settings_orientation">Ausrichtung</string>
+    <string name="ui_quick_settings_orientation_auto">Auto</string>
+    <string name="ui_quick_settings_orientation_landscape">Quer</string>
+    <string name="ui_quick_settings_orientation_portrait">Hoch</string>
     <string name="ui_quick_settings_haptics">Vibration</string>
     <string name="ui_quick_settings_ui_sounds">UI-Sounds</string>
     <string name="ui_quick_settings_swap_ab">A/B tauschen</string>
@@ -682,7 +684,6 @@
 
     <string name="ui_sync_overlay_unknown_game">Spiel</string>
     <string name="ui_sync_overlay_slot_prefix">"Slot: "</string>
-    <string name="ui_sync_overlay_slot_default">Neueste</string>
     <string name="ui_sync_overlay_blocked_grant">Berechtigung erteilen</string>
     <string name="ui_sync_overlay_blocked_configure_path">Speicherpfad konfigurieren</string>
     <string name="ui_sync_overlay_blocked_disable">Sync deaktivieren</string>
@@ -989,7 +990,6 @@
     <string name="media_library_viewmodel_refresh_label">Wird aktualisiert</string>
 
     <string name="gamedetail_action_buttons_play">SPIELEN</string>
-    <string name="gamedetail_action_buttons_autosave">Autospeicherung</string>
     <string name="gamedetail_action_buttons_download">HERUNTERLADEN</string>
     <string name="gamedetail_action_buttons_install">INSTALLIEREN</string>
     <string name="gamedetail_action_buttons_queued">WARTET...</string>
